@@ -6,34 +6,34 @@
 <br>
 <div class="container">
 	<div style="text-align: center">
-		<h1> Menu Details </h1>
-		<img src="/images/<%= menus.image %>" />
+		<h1> car Details </h1>
+		<img src="/images/<%= cars.image %>" />
 		<br>
-		<p>Name: <%= menus.name %></p>
-		<p>Price: $<%= menus.price %></p>
-		<p>Type: <%= menus.type %></p>
-		<p>Inventory: <%= menus.inventory %></p>
-		<p>Decription: <%= menus.description %></p>
+		<p>Name: <%= cars.name %></p>
+		<p>Price: $<%= cars.price %>/day</p>
+		<p>Type: <%= cars.type %></p>
+		<p>Inventory: <%= cars.inventory %></p>
+		<p>Decription: <%= cars.description %></p>
 
 		<% if(user && user.isAdmin) { %>
 		<div class="forAdmin">
-			<div class="toEditMenu">
-				<form style="display: inline" action="/menus/<%= menus._id %>/edit" method="GET">
-					<button type="submit" class="btn btn-warning">Edit menus</button>
+			<div class="toEditcar">
+				<form style="display: inline" action="/cars/<%= cars._id %>/edit" method="GET">
+					<button type="submit" class="btn btn-warning">Edit cars</button>
 				</form>
 			</div>
 			<br>
-			<% if(!menus.isDeleted) { %>
-			<div class="toDeleteMenu">
-				<form style="display: inline" action="/menus/<%= menus._id %>/delete" method="POST">
-					<button type="submit" class="btn btn-danger">Delete menus</button>
+			<% if(!cars.isDeleted) { %>
+			<div class="toDeletecar">
+				<form style="display: inline" action="/cars/<%= cars._id %>/delete" method="POST">
+					<button type="submit" class="btn btn-danger">Delete cars</button>
 				</form>
 			</div>
 			<% } %>
-			<% if(menus.isDeleted) { %>
-			<div class="toRecoverMenu">
-				<form style="display: inline" action="/menus/<%= menus._id %>/recover" method="POST">
-					<button type="submit" class="btn btn-info">Recover menus</button>
+			<% if(cars.isDeleted) { %>
+			<div class="toRecovercar">
+				<form style="display: inline" action="/cars/<%= cars._id %>/recover" method="POST">
+					<button type="submit" class="btn btn-info">Recover cars</button>
 				</form>
 			</div>
 			<% } %>
@@ -44,13 +44,13 @@
 		<div class="forcustomer">
 			<div class="toLikeAnItem">
 				<form style="display: inline" action="/<%= user._id %>/wishlist" method="POST">
-					<input name="like" id="like" value="<%= menus._id %>" type="hidden" /><br>
+					<input name="like" id="like" value="<%= cars._id %>" type="hidden" /><br>
 					<button type="submit" class="btn btn-outline-info">Add to Wishlist</button>
 				</form>
 			</div>
 			<div class="toBuyAnItem">
 				<form style="display: inline" action="/<%= user._id %>/cart" method="POST">
-					<input name="buy" id="buy" value="<%= menus._id %>" type="hidden" /><br>
+					<input name="buy" id="buy" value="<%= cars._id %>" type="hidden" /><br>
 					<button type="submit" class="btn btn-outline-primary">Add to shopping cart</button>
 					<input type="number" id="quantity" name="quantity" min="1" max="10" value="1">
 				</form>
@@ -60,7 +60,7 @@
 
 		<br>
 		<p>
-			<a href="/menus">Back to List</a>
+			<a href="/cars">Back to List</a>
 		</p>
 	</div>
 
