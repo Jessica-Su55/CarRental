@@ -7,7 +7,7 @@
 	<hr class="my-4">
 
 	<% if(user && user.isAdmin) { %>
-	<a class="btn btn-info btn-lg" href="cars/new" role="button">Add a new dish</a>
+	<a class="btn btn-info btn-lg" href="cars/new" role="button">Post a new car</a>
 	<% } %>
 	<p> </p>
 
@@ -30,12 +30,12 @@
 	</form>
 </div>
 
-<div class="container">
-	<div class="row" id="cars-grid">
+<div class="container-fluid" style="margin-left: 2%">
+	<div class="row justify-content-center" id="cars-grid">
 		<% cars.forEach( car => { %>
-		<div class="md-col-4" style="margin-left: 5%">
+		<div class="col-xl-3" style="margin-left: 0%">
 			<a href="/cars/<%= car._id %>">
-				<img src="../images/<%= car.image %>" style="width:300px; height:300px;" />
+				<img src="../images/<%= car.image %>" style="width:400px; height:300px;" />
 			</a>
 
 			<div class="caption" style="text-align: center; font-size: 1.2rem">

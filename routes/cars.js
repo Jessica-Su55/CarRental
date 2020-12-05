@@ -6,9 +6,15 @@ var monk = require('monk');
 var db = monk('localhost:27017/car');
 
 router.get('/', function(req, res) {
+
 	var collection = db.get('cars');
 	
 	collection.find({}, function(err, cars){
+
+	var collection = db.get('menus');
+
+	collection.find({}, function(err, menus){
+
 		if (err) throw err;
 	  	res.json(cars);
 	});

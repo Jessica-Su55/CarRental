@@ -219,12 +219,12 @@ router.get("/cars", async (req, res, next) => {
 				collection.find({}, function (err, cars) {
 					if (err) throw err;
 					length = cars.length;
-					for (var i = 6 * (page - 1); i < 6 * page; i++) {
+					for (var i = 8 * (page - 1); i < 8 * page; i++) {
 						if (i < length) {
 							result.push(cars[i]);
 						}
 					}
-					var maxPage = Math.ceil(length / 6);
+					var maxPage = Math.ceil(length / 8);
 					res.render("index", {
 						cars: result,
 						currentPage: page,
@@ -237,12 +237,12 @@ router.get("/cars", async (req, res, next) => {
 				collection.find({ isDeleted: false }, function (err, cars) {
 					if (err) throw err;
 					length = cars.length;
-					for (var i = 6 * (page - 1); i < 6 * page; i++) {
+					for (var i = 8 * (page - 1); i < 8 * page; i++) {
 						if (i < length) {
 							result.push(cars[i]);
 						}
 					}
-					var maxPage = Math.ceil(length / 6);
+					var maxPage = Math.ceil(length / 8);
 					res.render("index", {
 						cars: result,
 						currentPage: page,
