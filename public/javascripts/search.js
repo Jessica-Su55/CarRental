@@ -1,22 +1,22 @@
-$('#menus-search').on('input', function() {
+$('#cars-search').on('input', function() {
   var search = $(this).serialize();
   if(search === "search=") {
     search = "all"
   }
   $("#paging").css("display","none");
-  $.get('/menus?' + search, function(data) {
-    $('#menus-grid').html('');
-    data.forEach(function(menu) {
+  $.get('/cars?' + search, function(data) {
+    $('#cars-grid').html('');
+    data.forEach(function(car) {
 
       
-        $('#menus-grid').append(`
+        $('#cars-grid').append(`
         <div class="md-col-4" style="margin-left: 5%">
-          <a href="../../menus/${ menu._id }">
-            <img src="../images/${ menu.image }" style="width:300px; height:300px;"/>
+          <a href="../../cars/${ car._id }">
+            <img src="../images/${ car.image }" style="width:300px; height:300px;"/>
           </a>
             
             <p class="caption" style="text-align: center; font-size: 1.2rem">
-              <a href="../../menus/${ menu._id }" class="caption">${ menu.name }</a>
+              <a href="../../cars/${ car._id }" class="caption">${ car.name }</a>
             </p>
         </div>
       `);
@@ -26,7 +26,7 @@ $('#menus-search').on('input', function() {
   });
 });
 
-$('#menus-search').submit(function(event) {
+$('#cars-search').submit(function(event) {
   event.preventDefault();
 });
 
