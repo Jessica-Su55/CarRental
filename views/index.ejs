@@ -2,43 +2,43 @@
 
 <div class="jumbotron">
 	<br>
-	<h2 class="display-4" sytle="margin-top: 20">The PIADA ITALIAN FOOD</h2>
-	<p class="lead">We are currently operating with adjusted hours of 11:00am - 9:00pm daily.</p>
+	<h2 class="display-4" sytle="margin-top: 20">Fancy CarRentals</h2>
+	<p class="lead">You can rent your cars at 24/7!</p>
 	<hr class="my-4">
 
 	<% if(user && user.isAdmin) { %>
-	<a class="btn btn-info btn-lg" href="menus/new" role="button">Add a new dish</a>
+	<a class="btn btn-info btn-lg" href="cars/new" role="button">Add a new dish</a>
 	<% } %>
 	<p> </p>
 
 
 	<br>
-	<form action="/menus" method="GET" class="form-inline" id="menus-search">
+	<form action="/cars" method="GET" class="form-inline" id="cars-search">
 		<div class="form-group">
 			<input type="text" name="search" placeholder="Dish search..." class="form-control">
 			<select name="type" id="setected_type" style="height:36px;" class="form-control">
 				<option value="all">All</option>
-				<option value="FAMILY MEALS">FAMILY MEALS</option>
-				<option value="FIT BOWLS">FIT BOWLS</option>
-				<option value="PIADAS">PIADAS</option>
-				<option value="SALADS">SALADS</option>
-				<option value="STREET SIDES">STREET SIDES</option>
-				<option value="BEVERAGES">BEVERAGES</option>
+				<option value="suv">Suv</option>
+				<option value="van">Van</option>
+				<option value="sedan">Sedan</option>
+				<option value="convertible">Convertible</option>
+				<option value="pickuptruck">Pickup Truck</option>
+				<option value="couple">Couple</option>
 			</select>
 		</div>
 	</form>
 </div>
 
 <div class="container">
-	<div class="row" id="menus-grid">
-		<% menus.forEach( menu => { %>
+	<div class="row" id="cars-grid">
+		<% cars.forEach( car => { %>
 		<div class="md-col-4" style="margin-left: 5%">
-			<a href="/menus/<%= menu._id %>">
-				<img src="../images/<%= menu.image %>" style="width:300px; height:300px;" />
+			<a href="/cars/<%= car._id %>">
+				<img src="../images/<%= car.image %>" style="width:300px; height:300px;" />
 			</a>
 
 			<div class="caption" style="text-align: center; font-size: 1.2rem">
-				<a href="/menus/<%= menu._id %>"> <%= menu.name %></a>
+				<a href="/cars/<%= car._id %>"> <%= car.name %></a>
 			</div>
 		</div>
 		<% }); %>
@@ -51,15 +51,15 @@
 <div class="container" id="paging" style="text-align: center; margin: auto">
 	<% if (currentPage ==1 && numOfPages>1) {%>
 	<%= parseInt(currentPage)  %>
-	<a href="/menus?page=<%= parseInt(currentPage) + 1 %>"><i class="fas fa-chevron-right"></i></a>
+	<a href="/cars?page=<%= parseInt(currentPage) + 1 %>"><i class="fas fa-chevron-right"></i></a>
 
 	<%} else if(currentPage < numOfPages) { %>
-	<a href="/menus?page=<%= parseInt(currentPage) - 1 %>"><i class="fas fa-chevron-left"></i></a>
+	<a href="/cars?page=<%= parseInt(currentPage) - 1 %>"><i class="fas fa-chevron-left"></i></a>
 	<%= parseInt(currentPage)  %>
-	<a href="/menus?page=<%= parseInt(currentPage) + 1 %>"><i class="fas fa-chevron-right"></i></a>
+	<a href="/cars?page=<%= parseInt(currentPage) + 1 %>"><i class="fas fa-chevron-right"></i></a>
 
 	<%} else if(currentPage == numOfPages && numOfPages > 1) { %>
-	<a href="/menus?page=<%= parseInt(currentPage) - 1 %>"><i class="fas fa-chevron-left"></i></a>
+	<a href="/cars?page=<%= parseInt(currentPage) - 1 %>"><i class="fas fa-chevron-left"></i></a>
 	<%= parseInt(currentPage)  %>
 	<% } %>
 </div>

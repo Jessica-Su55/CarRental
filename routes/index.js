@@ -11,7 +11,7 @@ function escapeRegex(text) {
 }
 
 var monk = require("monk");
-var db = monk("localhost:27017/restaurant");
+var db = monk("localhost:27017/car");
 
 // Landing Page
 router.get("/", function (req, res, next) {
@@ -19,13 +19,13 @@ router.get("/", function (req, res, next) {
 });
 
 // "Add New Dish" form
-router.get("/menus/new", function (req, res) {
+router.get("/cars/new", function (req, res) {
 	res.render("new", { user: req.user });
 });
 
 // Add the new dish
-router.post("/menus", function (req, res) {
-	var collection = db.get("menus");
+router.post("/cars", function (req, res) {
+	var collection = db.get("cars");
 	var form = new formidable.IncomingForm();
 	form.parse(req, function (err, fields, files) {
 		var oldpath = files.file.path;
@@ -45,18 +45,18 @@ router.post("/menus", function (req, res) {
 			},
 			function (err, menu) {
 				if (err) throw err;
-				res.redirect("/menus");
+				res.redirect("/cars");
 			}
 		);
 	});
 });
 
 // Details of one menu
-router.get("/menus/:id", function (req, res) {
-	var collection = db.get("menus");
-	collection.findOne({ _id: req.params.id }, function (err, menus) {
+router.get("/cars/:id", function (req, res) {
+	var collection = db.get("cars");
+	collection.findOne({ _id: req.params.id }, function (err, cars) {
 		if (err) throw err;
-		res.render("show", { menus: menus, user: req.user });
+		res.render("show", { cars: cars, user: req.user });
 	});
 });
 
@@ -94,7 +94,7 @@ router.post("/register", function (req, res) {
 		}
 
 		passport.authenticate("local")(req, res, function () {
-			res.redirect("/menus");
+			res.redirect("/cars");
 		});
 	});
 });
@@ -108,7 +108,7 @@ router.get("/login", function (req, res) {
 router.post(
 	"/login",
 	passport.authenticate("local", {
-		successRedirect: "/menus",
+		successRedirect: "/cars",
 		failureRedirect: "/login",
 	}),
 	function (req, res) { }
@@ -124,13 +124,13 @@ function isLoggedIn(req, res, next) {
 // To logout
 router.get("/logout", function (req, res) {
 	req.logout();
-	res.redirect("/menus");
+	res.redirect("/cars");
 });
 
 // Search engine
-router.get("/menus", async (req, res, next) => {
+router.get("/cars", async (req, res, next) => {
 	var page = parseInt(req.query.page) || 1;
-	var collection = db.get("menus");
+	var collection = db.get("cars");
 	var result = [];
 	var length = 0;
 
@@ -139,21 +139,21 @@ router.get("/menus", async (req, res, next) => {
 			const regex = new RegExp(escapeRegex(req.query.search), "gi");
 			var type = new RegExp(escapeRegex(req.query.type), "gi");
 			if (req.user && req.user.isAdmin) {
-				collection.find({ name: regex, type: type }, function (err, menus) {
+				collection.find({ name: regex, type: type }, function (err, cars) {
 					if (err) {
 						console.log(err);
 					} else {
-						res.status(200).json(menus);
+						res.status(200).json(cars);
 					}
 				});
 			} else {
 				collection.find(
 					{ name: regex, type: type, isDeleted: false },
-					function (err, menus) {
+					function (err, cars) {
 						if (err) {
 							console.log(err);
 						} else {
-							res.status(200).json(menus);
+							res.status(200).json(cars);
 						}
 					}
 				);
@@ -162,22 +162,22 @@ router.get("/menus", async (req, res, next) => {
 			const regex = new RegExp(escapeRegex(req.query.search), "gi");
 			var type = new RegExp(escapeRegex(req.query.type), "gi");
 			if (req.user && req.user.isAdmin) {
-				collection.find({ name: regex }, function (err, menus) {
+				collection.find({ name: regex }, function (err, cars) {
 					if (err) {
 						console.log(err);
 					} else {
-						res.status(200).json(menus);
+						res.status(200).json(cars);
 					}
 				});
 			} else {
 				collection.find({ name: regex, isDeleted: false }, function (
 					err,
-					menus
+					cars
 				) {
 					if (err) {
 						console.log(err);
 					} else {
-						res.status(200).json(menus);
+						res.status(200).json(cars);
 					}
 				});
 			}
@@ -185,69 +185,69 @@ router.get("/menus", async (req, res, next) => {
 	} else if (req.query.search == "" && req.query.type != "all") {
 		var type = new RegExp(escapeRegex(req.query.type), "gi");
 		if (req.user && req.user.isAdmin) {
-			collection.find({ type: type }, function (err, menus) {
+			collection.find({ type: type }, function (err, cars) {
 				if (err) {
 					console.log(err);
 				} else {
-					res.status(200).json(menus);
+					res.status(200).json(cars);
 				}
 			});
 		} else {
-			collection.find({ type: type, isDeleted: false }, function (err, menus) {
+			collection.find({ type: type, isDeleted: false }, function (err, cars) {
 				if (err) {
 					console.log(err);
 				} else {
-					res.status(200).json(menus);
+					res.status(200).json(cars);
 				}
 			});
 		}
 	} else {
 		if (req.xhr) {
 			if (req.user && req.user.isAdmin) {
-				collection.find({}, function (err, menus) {
+				collection.find({}, function (err, cars) {
 					if (err) throw err;
-					res.status(200).json(menus);
+					res.status(200).json(cars);
 				});
 			} else {
-				collection.find({ isDeleted: false }, function (err, menus) {
+				collection.find({ isDeleted: false }, function (err, cars) {
 					if (err) throw err;
-					res.status(200).json(menus);
+					res.status(200).json(cars);
 				});
 			}
 		} else {
 			if (req.user && req.user.isAdmin) {
-				collection.find({}, function (err, menus) {
+				collection.find({}, function (err, cars) {
 					if (err) throw err;
-					length = menus.length;
+					length = cars.length;
 					for (var i = 6 * (page - 1); i < 6 * page; i++) {
 						if (i < length) {
-							result.push(menus[i]);
+							result.push(cars[i]);
 						}
 					}
 					var maxPage = Math.ceil(length / 6);
 					res.render("index", {
-						menus: result,
+						cars: result,
 						currentPage: page,
 						numOfPages: maxPage,
-						numOfResults: menus.length,
+						numOfResults: cars.length,
 						user: req.user,
 					});
 				});
 			} else {
-				collection.find({ isDeleted: false }, function (err, menus) {
+				collection.find({ isDeleted: false }, function (err, cars) {
 					if (err) throw err;
-					length = menus.length;
+					length = cars.length;
 					for (var i = 6 * (page - 1); i < 6 * page; i++) {
 						if (i < length) {
-							result.push(menus[i]);
+							result.push(cars[i]);
 						}
 					}
 					var maxPage = Math.ceil(length / 6);
 					res.render("index", {
-						menus: result,
+						cars: result,
 						currentPage: page,
 						numOfPages: maxPage,
-						numOfResults: menus.length,
+						numOfResults: cars.length,
 						user: req.user,
 					});
 				});
@@ -257,19 +257,19 @@ router.get("/menus", async (req, res, next) => {
 });
 
 // To edit a menu
-router.get("/menus/:id/edit", function (req, res) {
-	var collection = db.get("menus");
-	collection.findOne({ _id: req.params.id }, function (err, menus) {
+router.get("/cars/:id/edit", function (req, res) {
+	var collection = db.get("cars");
+	collection.findOne({ _id: req.params.id }, function (err, cars) {
 		if (err) throw err;
-		res.render("edit", { menus: menus, user: req.user });
+		res.render("edit", { cars: cars, user: req.user });
 	});
 });
 
 // Update the page
-router.put("/menus/:id", function (req, res) {
-	var collection = db.get("menus");
+router.put("/cars/:id", function (req, res) {
+	var collection = db.get("cars");
 	var form = new formidable.IncomingForm();
-	var url = "/menus/" + req.params.id;
+	var url = "/cars/" + req.params.id;
 
 	form.parse(req, function (err, fields, files) {
 		var oldpath = files.file.path;
@@ -292,9 +292,9 @@ router.put("/menus/:id", function (req, res) {
 });
 
 // Delete the menu
-router.post("/menus/:id/delete", function (req, res) {
-	var collection = db.get("menus");
-	var url = "/menus/" + req.params.id;
+router.post("/cars/:id/delete", function (req, res) {
+	var collection = db.get("cars");
+	var url = "/cars/" + req.params.id;
 	collection
 		.findOneAndUpdate(
 			{ _id: req.params.id },
@@ -309,9 +309,9 @@ router.post("/menus/:id/delete", function (req, res) {
 });
 
 // Recover the menu
-router.post("/menus/:id/recover", function (req, res) {
-	var collection = db.get("menus");
-	var url = "/menus/" + req.params.id;
+router.post("/cars/:id/recover", function (req, res) {
+	var collection = db.get("cars");
+	var url = "/cars/" + req.params.id;
 	collection
 		.findOneAndUpdate(
 			{ _id: req.params.id },
@@ -331,12 +331,12 @@ router.post("/menus/:id/recover", function (req, res) {
  */
 // Add to wishlist
 router.post("/:id/wishlist", function (req, res) {
-	var menus_collection = db.get("menus");
+	var cars_collection = db.get("cars");
 	var wl_collection = db.get("wishlist");
 
-	menus_collection.findOne({ _id: req.body.like }, function (err, menu) {
+	cars_collection.findOne({ _id: req.body.like }, function (err, menu) {
 		if (err) throw err;
-		var url = "/menus/" + req.body.like;
+		var url = "/cars/" + req.body.like;
 
 		wl_collection.findOne(
 			{
@@ -391,7 +391,7 @@ router.get("/:id/wishlist", function (req, res) {
 		}
 		wl_collection.find({ username: foundUser.username }, function (err, wls) {
 			if (err) {
-				res.redirect("/menus");
+				res.redirect("/cars");
 			}
 			res.render("wishlist", { user: foundUser, wishlists: wls });
 		});
@@ -418,7 +418,7 @@ router.get("/:id/cart", function (req, res) {
 			items
 		) {
 			if (err) {
-				res.redirect("/menus");
+				res.redirect("/cars");
 			}
 			res.render("cart", { user: foundUser, items: items });
 		});
@@ -427,12 +427,12 @@ router.get("/:id/cart", function (req, res) {
 
 // Add to shopping cart
 router.post("/:id/cart", function (req, res) {
-	var menus_collection = db.get("menus");
+	var cars_collection = db.get("cars");
 	var cart_collection = db.get("cart");
 
-	menus_collection.findOne({ _id: req.body.buy }, function (err, menu) {
+	cars_collection.findOne({ _id: req.body.buy }, function (err, menu) {
 		if (err) throw err;
-		var url = "/menus/" + menu._id;
+		var url = "/cars/" + menu._id;
 
 		cart_collection.findOne(
 			{ userid: req.user._id, menuObject: menu },
@@ -481,12 +481,12 @@ router.post("/:id/cart", function (req, res) {
 // Delete from the cart.
 router.post("/:id/cart/remove", function (req, res) {
 	var cart_collection = db.get("cart");
-	var menus_collection = db.get("menus");
+	var cars_collection = db.get("cars");
 	var url = "/" + req.params.id + "/cart";
 	var deduct = parseInt(req.body.removeQuantity);
 	var query = { menuname: req.body.itemname, username: req.body.username };
 
-	menus_collection.findOne({ name: req.body.itemname }, function (err, menu) {
+	cars_collection.findOne({ name: req.body.itemname }, function (err, menu) {
 		cart_collection.findOne(query, function (err, result) {
 			if (err) throw err;
 
@@ -528,12 +528,12 @@ router.post("/:id/cart/removeAll", function (req, res) {
 // Add more from the cart.
 router.post("/:id/cart/add", function (req, res) {
 	var cart_collection = db.get("cart");
-	var menus_collection = db.get("menus");
+	var cars_collection = db.get("cars");
 	var url = "/" + req.params.id + "/cart";
 	var add = parseInt(req.body.addQuantity);
 	var query = { menuname: req.body.itemname, username: req.body.username };
 
-	menus_collection.findOne({ name: req.body.itemname }, function (err, menu) {
+	cars_collection.findOne({ name: req.body.itemname }, function (err, menu) {
 		cart_collection.findOne(query, function (err, result) {
 			if (err) throw err;
 
@@ -562,7 +562,7 @@ router.post("/:id/cart/add", function (req, res) {
  */
 // Confirm page before checking out.
 router.get("/:id/checkout", function (req, res) {
-	var menu_collection = db.get("menus");
+	var menu_collection = db.get("cars");
 	var cart_collection = db.get("cart");
 	var total = 0.0;
 	var canCheckout = true;
@@ -577,7 +577,7 @@ router.get("/:id/checkout", function (req, res) {
 			items
 		) {
 			if (err) {
-				res.redirect("/menus");
+				res.redirect("/cars");
 			}
 
 			for (var i = 0; i < items.length; i++) {
@@ -603,7 +603,7 @@ router.get("/:id/checkout", function (req, res) {
 router.post("/:id/success", function (req, res) {
 	var cart_collection = db.get("cart");
 	var order_collection = db.get("orders");
-	var menus_collection = db.get("menus");
+	var cars_collection = db.get("cars");
 
 	var timeStamp = new Date().toLocaleString();
 	var orderId = new Date().getTime().toFixed(0).toString();
@@ -614,7 +614,7 @@ router.post("/:id/success", function (req, res) {
 		}
 
 		var oneOrder = {
-			menus: [],
+			cars: [],
 			userid: req.params.id,
 			username: foundUser.username,
 			orderid: orderId,
@@ -630,7 +630,7 @@ router.post("/:id/success", function (req, res) {
 
 			// Removing coresponding items from inventory
 			for (var i = 0; i < items.length; i++) {
-				menus_collection
+				cars_collection
 					.findOneAndUpdate(
 						{ name: items[i].menuname },
 						{
@@ -650,7 +650,7 @@ router.post("/:id/success", function (req, res) {
 					menuname: items[i].menuname,
 					menucount: items[i].menucount,
 				};
-				oneOrder.menus.push(oneMenu);
+				oneOrder.cars.push(oneMenu);
 			}
 
 			order_collection.insert(oneOrder, function (err, records) {
@@ -726,7 +726,7 @@ router.get("/:id/profile/:orderId", function (req, res) {
 			res.render("orderdetail", {
 				user: foundUser,
 				order: oneOrder,
-				items: oneOrder.menus,
+				items: oneOrder.cars,
 			});
 		});
 	});

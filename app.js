@@ -8,7 +8,7 @@ var methodOveride = require('method-override');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var menusRouter = require('./routes/menus');
+var carsRouter = require('./routes/cars');
 
 var mongoose = require('mongoose'); 
 var passport = require('passport');
@@ -36,7 +36,7 @@ app.use(methodOveride('_method'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/api/menus', menusRouter);
+app.use('/api/cars', carsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -50,7 +50,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // mongoose db connection
-mongoose.connect('mongodb://localhost:27017/restaurant');
+mongoose.connect('mongodb://localhost:27017/car');
 
 // error handler
 app.use(function(err, req, res, next) {
