@@ -13,7 +13,7 @@
         <input type="password" name="password" id="password" class="form-control" placeholder="Password">
         <span id="result"></span>
       </div>
-      
+
 
       <button type="submit" class="btn btn-primary" id="submit">Submit</button>
     </form>
@@ -29,14 +29,14 @@ $(document).ready(function() {
     $('#password').keyup(function() {
         $('#result').html(checkStrength($('#password').val()));
         if($("#result").text() == "Your password should include at least 6 characters"){
-            $('button').hide();
+            // $('button').hide();
         }else if ($('#usernameErr').text() ==="Valid Username"){
             $('button').show();
-        } 
+        }
     });
 
     $('#password').focus(function() {
-        $('button').hide();
+        // $('button').hide();
     });
 
     function checkStrength(password) {
@@ -44,6 +44,7 @@ $(document).ready(function() {
         if (password.length < 6) {
             $('#result').removeClass()
             $('#result').addClass('short')
+            $("#result").css("color","red");
             return 'Your password should include at least 6 characters'
         }
         if (password.length > 7) strength += 1
@@ -60,14 +61,17 @@ $(document).ready(function() {
         if (strength < 2) {
             $('#result').removeClass()
             $('#result').addClass('weak')
+            $("#result").css("color","brown");
             return 'Weak'
         } else if (strength == 2) {
             $('#result').removeClass()
             $('#result').addClass('good')
+            $("#result").css("color","yellowgreen");
             return 'Good'
         } else {
             $('#result').removeClass()
             $('#result').addClass('strong')
+            $("#result").css("color","green");
             return 'Strong'
         }
     }
@@ -78,20 +82,23 @@ $('#rusername').blur(function() {
     var username = $(this).serialize();
     if(username==="username=") {
         // alert("empty");
+        $("#usernameErr").css("color","red");
         $('#usernameErr').text("Username cannot be empty");
-        $('button').hide();
+        // $('button').hide();
     }
     else {
         $.get('/register?' + username, function(response) {
             if (response.message === 'user exists') {
+                $("#usernameErr").css("color","red");
                 $('#usernameErr').text(response.message);
-                $('button').hide();
+                // $('button').hide();
             } else {
+                $("#usernameErr").css("color","green");
                 $('#usernameErr').text("Valid Username");
                 $('button').show();
             }
-        }); 
-    } 
+        });
+    }
 });
 
 $('#rusername').submit(function(event) {
