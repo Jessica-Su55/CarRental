@@ -14,6 +14,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
+const flash = require('connect-flash');
 
 var app = express();
 
@@ -30,6 +31,13 @@ app.use(cookieParser());
 app.use(session({ secret: 'this-is-a-secret-token' }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(flash());
+
+app.use((req, res, next) =>{
+     res.locals.success = req.flash('success');
+     next();
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOveride('_method'));

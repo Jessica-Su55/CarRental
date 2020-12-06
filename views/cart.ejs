@@ -24,8 +24,9 @@
                         </div>
                         <div class="col-md-6">
                             <p><strong>Price: </strong>$<%= item.carObject.price %></p>
-                            <p><strong>Quantity: </strong><%= item.carcount %></p>
+                            <p><strong>Days: </strong><%= item.carcount %></p>
                         </div>
+                        <label style="font-size: 20px; margin-left: 15px;">How many days do you rent for this car?</label>
                         <div class="col-md-6">
                             <form action="/<%= user._id%>/cart/remove" method="POST">
                                 <input name="itemname" id="itemname" value="<%= item.carObject.name %>" type="hidden" />
@@ -55,7 +56,7 @@
         </div>
     </div>
     <% }); %>
-    <a href="/cars" class="btn btn-primary">Back to Home</a>
+    <a href="/cars" class="btn btn-primary">Select other cars</a>
     <a href="/<%= user._id%>/checkout" class="btn btn-success">Checkout</a>
 </div>
 

@@ -45,6 +45,7 @@ router.post("/cars", function (req, res) {
 			},
 			function (err, car) {
 				if (err) throw err;
+				req.flash('success','Successfully Add a new Car!');
 				res.redirect("/cars");
 			}
 		);
@@ -94,6 +95,7 @@ router.post("/register", function (req, res) {
 		}
 
 		passport.authenticate("local")(req, res, function () {
+			
 			res.redirect("/cars");
 		});
 	});
@@ -127,13 +129,7 @@ router.get("/logout", function (req, res) {
 	res.redirect("/cars");
 });
 
-// Search engine
-// router.get("/cars/search",async (req, res, next) => {
-// 	var page = parseInt(req.query.page) || 1;
-// 	var collection = db.get("cars");
-// 	var result = [];
-// 	var length = 0;
-// });
+
 
 
 
@@ -550,6 +546,7 @@ router.get("/:id/cart", function (req, res) {
 		if (err) {
 			res.redirect("/login");
 		}
+		// console.log("wowowowoow" + foundUser.username);
 		cart_collection.find({ username: foundUser.username }, function (
 			err,
 			items
@@ -557,6 +554,7 @@ router.get("/:id/cart", function (req, res) {
 			if (err) {
 				res.redirect("/cars");
 			}
+			
 			res.render("cart", { user: foundUser, items: items });
 		});
 	});
@@ -772,7 +770,7 @@ router.post("/:id/success", function (req, res) {
 						{ name: items[i].carname },
 						{
 							$inc: {
-								inventory: -1 * items[i].carcount,
+								inventory: -1,
 							},
 						}
 					)
