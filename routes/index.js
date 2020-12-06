@@ -128,13 +128,21 @@ router.get("/logout", function (req, res) {
 });
 
 // Search engine
+// router.get("/cars/search",async (req, res, next) => {
+// 	var page = parseInt(req.query.page) || 1;
+// 	var collection = db.get("cars");
+// 	var result = [];
+// 	var length = 0;
+// });
+
+
+
 router.get("/cars", async (req, res, next) => {
 	var page = parseInt(req.query.page) || 1;
 	var collection = db.get("cars");
 	var result = [];
 	var length = 0;
-
-	if (req.query.search && req.xhr) {
+	if (req.query.search) {
 		if (req.query.type != "all") {
 			const regex = new RegExp(escapeRegex(req.query.search), "gi");
 			var type = new RegExp(escapeRegex(req.query.type), "gi");
@@ -143,22 +151,51 @@ router.get("/cars", async (req, res, next) => {
 					if (err) {
 						console.log(err);
 					} else {
-						res.status(200).json(cars);
+						   result = []
+						   length = cars.length;
+					        for (var i = 8 * (page - 1); i < 8 * page; i++) {
+						        if (i < length) {
+							        result.push(cars[i]);
+						        }
+					        }
+					       var maxPage = Math.ceil(length / 8);
+					       res.render("index", {
+						       cars: result,
+						       currentPage: page,
+						       numOfPages: maxPage,
+						       numOfResults: cars.length,
+						       user: req.user,
+					         });
 					}
 				});
 			} else {
+
 				collection.find(
 					{ name: regex, type: type, isDeleted: false },
 					function (err, cars) {
 						if (err) {
 							console.log(err);
 						} else {
-							res.status(200).json(cars);
+						length = cars.length;
+					     for (var i = 8 * (page - 1); i < 8 * page; i++) {
+						     if (i < length) {
+							     result.push(cars[i]);
+						     }
+					     }
+					    var maxPage = Math.ceil(length / 8);
+					    res.render("index", {
+						    cars: result,
+						    currentPage: page,
+						    numOfPages: maxPage,
+						    numOfResults: cars.length,
+						    user: req.user,
+					      });
 						}
 					}
 				);
 			}
 		} else if (req.query.type == "all") {
+			// console.log("hellothere");
 			const regex = new RegExp(escapeRegex(req.query.search), "gi");
 			var type = new RegExp(escapeRegex(req.query.type), "gi");
 			if (req.user && req.user.isAdmin) {
@@ -166,7 +203,22 @@ router.get("/cars", async (req, res, next) => {
 					if (err) {
 						console.log(err);
 					} else {
-						res.status(200).json(cars);
+						
+						   result = []
+						   length = cars.length;
+					        for (var i = 8 * (page - 1); i < 8 * page; i++) {
+						        if (i < length) {
+							        result.push(cars[i]);
+						        }
+					        }
+					       var maxPage = Math.ceil(length / 8);
+					       res.render("index", {
+						       cars: result,
+						       currentPage: page,
+						       numOfPages: maxPage,
+						       numOfResults: cars.length,
+						       user: req.user,
+					         });
 					}
 				});
 			} else {
@@ -177,19 +229,47 @@ router.get("/cars", async (req, res, next) => {
 					if (err) {
 						console.log(err);
 					} else {
-						res.status(200).json(cars);
+                         length = cars.length;
+					     for (var i = 8 * (page - 1); i < 8 * page; i++) {
+						     if (i < length) {
+							     result.push(cars[i]);
+						     }
+					     }
+					    var maxPage = Math.ceil(length / 8);
+					    res.render("index", {
+						    cars: result,
+						    currentPage: page,
+						    numOfPages: maxPage,
+						    numOfResults: cars.length,
+						    user: req.user,
+					      });
 					}
 				});
 			}
 		}
 	} else if (req.query.search == "" && req.query.type != "all") {
+
 		var type = new RegExp(escapeRegex(req.query.type), "gi");
 		if (req.user && req.user.isAdmin) {
 			collection.find({ type: type }, function (err, cars) {
 				if (err) {
 					console.log(err);
 				} else {
-					res.status(200).json(cars);
+						   result = []
+						   length = cars.length;
+					        for (var i = 8 * (page - 1); i < 8 * page; i++) {
+						        if (i < length) {
+							        result.push(cars[i]);
+						        }
+					        }
+					       var maxPage = Math.ceil(length / 8);
+					       res.render("index", {
+						       cars: result,
+						       currentPage: page,
+						       numOfPages: maxPage,
+						       numOfResults: cars.length,
+						       user: req.user,
+					         });
 				}
 			});
 		} else {
@@ -197,7 +277,22 @@ router.get("/cars", async (req, res, next) => {
 				if (err) {
 					console.log(err);
 				} else {
-					res.status(200).json(cars);
+					    result = []
+						length = cars.length;
+					     for (var i = 8 * (page - 1); i < 8 * page; i++) {
+						     if (i < length) {
+							     result.push(cars[i]);
+						     }
+					     }
+					    var maxPage = Math.ceil(length / 8);
+					    res.render("index", {
+						    cars: result,
+						    currentPage: page,
+						    numOfPages: maxPage,
+						    numOfResults: cars.length,
+						    user: req.user,
+					      });
+					// res.status(200).json(cars);
 				}
 			});
 		}
@@ -206,15 +301,46 @@ router.get("/cars", async (req, res, next) => {
 			if (req.user && req.user.isAdmin) {
 				collection.find({}, function (err, cars) {
 					if (err) throw err;
-					res.status(200).json(cars);
+						   result = []
+						   length = cars.length;
+					        for (var i = 8 * (page - 1); i < 8 * page; i++) {
+						        if (i < length) {
+							        result.push(cars[i]);
+						        }
+					        }
+					       var maxPage = Math.ceil(length / 8);
+					       res.render("index", {
+						       cars: result,
+						       currentPage: page,
+						       numOfPages: maxPage,
+						       numOfResults: cars.length,
+						       user: req.user,
+					         });
 				});
 			} else {
+
 				collection.find({ isDeleted: false }, function (err, cars) {
 					if (err) throw err;
-					res.status(200).json(cars);
+					result = []
+						 length = cars.length;
+					     for (var i = 8 * (page - 1); i < 8 * page; i++) {
+						     if (i < length) {
+							     result.push(cars[i]);
+						     }
+					     }
+					    var maxPage = Math.ceil(length / 8);
+					    res.render("index", {
+						    cars: result,
+						    currentPage: page,
+						    numOfPages: maxPage,
+						    numOfResults: cars.length,
+						    user: req.user,
+					      });
+					// res.status(200).json(cars);
 				});
 			}
 		} else {
+
 			if (req.user && req.user.isAdmin) {
 				collection.find({}, function (err, cars) {
 					if (err) throw err;
