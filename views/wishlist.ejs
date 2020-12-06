@@ -10,21 +10,21 @@
     <div class="card mb-3" style="width: 70%;">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <a href="/cars/<%= wl.menuObject._id %>">
-                    <img class="card-img" src="/images/<%= wl.menuObject.image %>" style="width:180px; height:180px;" />
+                <a href="/cars/<%= wl.carObject._id %>">
+                    <img class="card-img" src="/images/<%= wl.carObject.image %>" style="width:180px; height:180px;" />
                 </a>
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <div id="menuinfo" class="row align-items-center" style="font-size: 0.9rem">
+                    <div id="carinfo" class="row align-items-center" style="font-size: 0.9rem">
                         <div class="col-md-6">
-                            <p><strong>Name: </strong><%= wl.menuObject.name %></p>
-                            <p><strong>Type: </strong><%= wl.menuObject.type %></p>
-                            <p><strong>Price: </strong>$<%= wl.menuObject.price %></p>
+                            <p><strong>Name: </strong><%= wl.carObject.name %></p>
+                            <p><strong>Type: </strong><%= wl.carObject.type %></p>
+                            <p><strong>Price: </strong>$<%= wl.carObject.price %></p>
                         </div>
                         <div class="col-md-6">
                             <form action="/<%= user._id%>/wishlist?_method=DELETE" method="POST">
-                                <input name="wlmenuname" id="wlmenuname" value="<%= wl.menuObject.name %>"
+                                <input name="wlcarname" id="wlcarname" value="<%= wl.carObject.name %>"
                                     type="hidden" />
                                 <input name="wlusername" id="wlusername" value="<%= user.username %>" type="hidden" />
                                 <button type="submit" class="btn btn-danger">Remove from Wishlist</button>

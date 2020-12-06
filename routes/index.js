@@ -273,22 +273,31 @@ router.put("/cars/:id", function (req, res) {
 
 	form.parse(req, function (err, fields, files) {
 		var oldpath = files.file.path;
-		console.log(oldpath);
+		// console.log(fields.file.name);
+		var image = "";
 		var newpath = 'public/images/' + files.file.name;
-		fs.rename(oldpath, newpath, function (err) {
+		// fs.rename(oldpath, newpath, function (err) {
+		// 	if (err) throw err;
+		// });
+		collection.findOne({ _id: req.params.id },function(err,cars){
 			if (err) throw err;
+			console.log("files.file.name:" + files.file.name);
+			if(files.file.name === ""){image = cars.image}else{
+				image = files.file.name;
+			}
+			collection.findOneAndUpdate({ _id: req.params.id }, {
+			    $set: {
+				    name: fields.name,
+				    image: image,
+				    type: fields.type,
+				    price: parseFloat(parseFloat(fields.price).toFixed(2)),
+				    description: fields.description,
+				    inventory: parseInt(fields.inventory),
+			    },
+		    }).then((updatedDoc) => { });
 		});
-		collection.findOneAndUpdate({ _id: req.params.id }, {
-			
-			$set: {
-				name: fields.name,
-				image: files.file.name,
-				type: fields.type,
-				price: parseFloat(parseFloat(fields.price).toFixed(2)),
-				description: fields.description,
-				inventory: parseInt(fields.inventory),
-			},
-		}).then((updatedDoc) => { });
+
+
 		res.redirect(url);
 	});
 });
