@@ -23,7 +23,7 @@ router.get("/cars/new", function (req, res) {
 	res.render("new", { user: req.user });
 });
 
-// Add the new dish
+// Add the new car
 router.post("/cars", function (req, res) {
 	var collection = db.get("cars");
 	var form = new formidable.IncomingForm();
@@ -43,7 +43,7 @@ router.post("/cars", function (req, res) {
 				inventory: parseInt(fields.inventory),
 				isDeleted: false,
 			},
-			function (err, menu) {
+			function (err, car) {
 				if (err) throw err;
 				res.redirect("/cars");
 			}
@@ -51,7 +51,7 @@ router.post("/cars", function (req, res) {
 	});
 });
 
-// Details of one menu
+// Details of one car
 router.get("/cars/:id", function (req, res) {
 	var collection = db.get("cars");
 	collection.findOne({ _id: req.params.id }, function (err, cars) {
@@ -256,7 +256,7 @@ router.get("/cars", async (req, res, next) => {
 	}
 });
 
-// To edit a menu
+// To edit a car
 router.get("/cars/:id/edit", function (req, res) {
 	var collection = db.get("cars");
 	collection.findOne({ _id: req.params.id }, function (err, cars) {
@@ -273,11 +273,13 @@ router.put("/cars/:id", function (req, res) {
 
 	form.parse(req, function (err, fields, files) {
 		var oldpath = files.file.path;
+		console.log(oldpath);
 		var newpath = 'public/images/' + files.file.name;
 		fs.rename(oldpath, newpath, function (err) {
 			if (err) throw err;
 		});
 		collection.findOneAndUpdate({ _id: req.params.id }, {
+			
 			$set: {
 				name: fields.name,
 				image: files.file.name,
@@ -291,7 +293,7 @@ router.put("/cars/:id", function (req, res) {
 	});
 });
 
-// Delete the menu
+// Delete the car
 router.post("/cars/:id/delete", function (req, res) {
 	var collection = db.get("cars");
 	var url = "/cars/" + req.params.id;
@@ -308,7 +310,7 @@ router.post("/cars/:id/delete", function (req, res) {
 	res.redirect(url);
 });
 
-// Recover the menu
+// Recover the car
 router.post("/cars/:id/recover", function (req, res) {
 	var collection = db.get("cars");
 	var url = "/cars/" + req.params.id;
@@ -326,7 +328,7 @@ router.post("/cars/:id/recover", function (req, res) {
 });
 
 /******************************************************************************************************
- * Wishlist: Yinglue's part
+ * Wishlist
  * ":id" is the user's id
  */
 // Add to wishlist
@@ -334,14 +336,14 @@ router.post("/:id/wishlist", function (req, res) {
 	var cars_collection = db.get("cars");
 	var wl_collection = db.get("wishlist");
 
-	cars_collection.findOne({ _id: req.body.like }, function (err, menu) {
+	cars_collection.findOne({ _id: req.body.like }, function (err, car) {
 		if (err) throw err;
 		var url = "/cars/" + req.body.like;
 
 		wl_collection.findOne(
 			{
 				userid: req.user._id,
-				menuObject: menu,
+				carObject: car,
 			},
 			function (err, result) {
 				if (err) throw err;
@@ -351,9 +353,9 @@ router.post("/:id/wishlist", function (req, res) {
 				} else {
 					wl_collection.insert(
 						{
-							menuObject: menu,
-							menuid: menu._id,
-							menuname: menu.name,
+							carObject: car,
+							carid: car._id,
+							carname: car.name,
 							userid: req.user._id,
 							username: req.user.username,
 						},
@@ -373,7 +375,7 @@ router.delete("/:id/wishlist", function (req, res) {
 	var wl_collection = db.get("wishlist");
 	var url = "/" + req.params.id + "/wishlist";
 	wl_collection.remove(
-		{ username: req.body.wlusername, menuname: req.body.wlmenuname },
+		{ username: req.body.wlusername, carname: req.body.wlcarname },
 		function (err, wl) {
 			if (err) throw err;
 			res.redirect(url);
@@ -402,7 +404,7 @@ router.get("/:id/wishlist", function (req, res) {
  ******************************************************************************************************/
 
 /******************************************************************************************************
- * Shopping cart: Yinglue's part
+ * Shopping cart
  * ":id" is the user's id
  */
 // Go to shopping cart
@@ -430,42 +432,42 @@ router.post("/:id/cart", function (req, res) {
 	var cars_collection = db.get("cars");
 	var cart_collection = db.get("cart");
 
-	cars_collection.findOne({ _id: req.body.buy }, function (err, menu) {
+	cars_collection.findOne({ _id: req.body.buy }, function (err, car) {
 		if (err) throw err;
-		var url = "/cars/" + menu._id;
+		var url = "/cars/" + car._id;
 
 		cart_collection.findOne(
-			{ userid: req.user._id, menuObject: menu },
+			{ userid: req.user._id, carObject: car },
 			function (err, result) {
 				if (err) throw err;
 				if (result) {
-					var inventory = parseInt(menu.inventory);
-					var originalMenucount = parseInt(result.menucount);
+					var inventory = parseInt(car.inventory);
+					var originalcarcount = parseInt(result.carcount);
 					var add = parseInt(req.body.quantity);
 					cart_collection
 						.findOneAndUpdate(
-							{ userid: req.user._id, menuObject: menu },
+							{ userid: req.user._id, carObject: car },
 							{
 								$set: {
-									menucount: originalMenucount + add,
-									isEnough: originalMenucount + add <= inventory,
+									carcount: originalcarcount + add,
+									isEnough: originalcarcount + add <= inventory,
 								},
 							}
 						)
 						.then((updateDoc) => { });
 					res.redirect(url);
 				} else {
-					var inventory = parseInt(menu.inventory);
-					var menucount = parseInt(req.body.quantity);
+					var inventory = parseInt(car.inventory);
+					var carcount = parseInt(req.body.quantity);
 					cart_collection.insert(
 						{
-							menuObject: menu,
-							menuid: menu._id,
-							menuname: menu.name,
-							menucount: menucount,
+							carObject: car,
+							carid: car._id,
+							carname: car.name,
+							carcount: carcount,
 							userid: req.user._id,
 							username: req.user.username,
-							isEnough: menucount <= inventory,
+							isEnough: carcount <= inventory,
 						},
 						function (err, oneCartItem) {
 							if (err) throw err;
@@ -484,21 +486,21 @@ router.post("/:id/cart/remove", function (req, res) {
 	var cars_collection = db.get("cars");
 	var url = "/" + req.params.id + "/cart";
 	var deduct = parseInt(req.body.removeQuantity);
-	var query = { menuname: req.body.itemname, username: req.body.username };
+	var query = { carname: req.body.itemname, username: req.body.username };
 
-	cars_collection.findOne({ name: req.body.itemname }, function (err, menu) {
+	cars_collection.findOne({ name: req.body.itemname }, function (err, car) {
 		cart_collection.findOne(query, function (err, result) {
 			if (err) throw err;
 
-			var inventory = parseInt(menu.inventory);
-			var originalMenucount = parseInt(result.menucount);
+			var inventory = parseInt(car.inventory);
+			var originalcarcount = parseInt(result.carcount);
 
-			if (originalMenucount > deduct) {
+			if (originalcarcount > deduct) {
 				cart_collection
 					.findOneAndUpdate(query, {
 						$set: {
-							menucount: originalMenucount - deduct,
-							isEnough: originalMenucount - deduct <= inventory,
+							carcount: originalcarcount - deduct,
+							isEnough: originalcarcount - deduct <= inventory,
 						},
 					})
 					.then((updateDoc) => { });
@@ -517,7 +519,7 @@ router.post("/:id/cart/remove", function (req, res) {
 router.post("/:id/cart/removeAll", function (req, res) {
 	var cart_collection = db.get("cart");
 	var url = "/" + req.params.id + "/cart";
-	var query = { menuname: req.body.itemname, username: req.body.username };
+	var query = { carname: req.body.itemname, username: req.body.username };
 
 	cart_collection.remove(query, function (err, ans) {
 		if (err) throw err;
@@ -531,20 +533,20 @@ router.post("/:id/cart/add", function (req, res) {
 	var cars_collection = db.get("cars");
 	var url = "/" + req.params.id + "/cart";
 	var add = parseInt(req.body.addQuantity);
-	var query = { menuname: req.body.itemname, username: req.body.username };
+	var query = { carname: req.body.itemname, username: req.body.username };
 
-	cars_collection.findOne({ name: req.body.itemname }, function (err, menu) {
+	cars_collection.findOne({ name: req.body.itemname }, function (err, car) {
 		cart_collection.findOne(query, function (err, result) {
 			if (err) throw err;
 
-			var inventory = parseInt(menu.inventory);
-			var originalMenucount = parseInt(result.menucount);
+			var inventory = parseInt(car.inventory);
+			var originalcarcount = parseInt(result.carcount);
 
 			cart_collection
 				.findOneAndUpdate(query, {
 					$set: {
-						menucount: originalMenucount + add,
-						isEnough: originalMenucount + add <= inventory,
+						carcount: originalcarcount + add,
+						isEnough: originalcarcount + add <= inventory,
 					},
 				})
 				.then((updateDoc) => { });
@@ -562,7 +564,7 @@ router.post("/:id/cart/add", function (req, res) {
  */
 // Confirm page before checking out.
 router.get("/:id/checkout", function (req, res) {
-	var menu_collection = db.get("cars");
+	var car_collection = db.get("cars");
 	var cart_collection = db.get("cart");
 	var total = 0.0;
 	var canCheckout = true;
@@ -582,8 +584,8 @@ router.get("/:id/checkout", function (req, res) {
 
 			for (var i = 0; i < items.length; i++) {
 				total +=
-					parseFloat(items[i].menucount) *
-					parseFloat(items[i].menuObject.price);
+					parseFloat(items[i].carcount) *
+					parseFloat(items[i].carObject.price);
 				if (!items[i].isEnough) {
 					canCheckout = false;
 				}
@@ -632,10 +634,10 @@ router.post("/:id/success", function (req, res) {
 			for (var i = 0; i < items.length; i++) {
 				cars_collection
 					.findOneAndUpdate(
-						{ name: items[i].menuname },
+						{ name: items[i].carname },
 						{
 							$inc: {
-								inventory: -1 * items[i].menucount,
+								inventory: -1 * items[i].carcount,
 							},
 						}
 					)
@@ -644,13 +646,13 @@ router.post("/:id/success", function (req, res) {
 
 			// Making the order object to put in the database
 			for (var i = 0; i < items.length; i++) {
-				var oneMenu = {
-					menuObject: items[i].menuObject,
-					menuid: items[i].menuid,
-					menuname: items[i].menuname,
-					menucount: items[i].menucount,
+				var onecar = {
+					carObject: items[i].carObject,
+					carid: items[i].carid,
+					carname: items[i].carname,
+					carcount: items[i].carcount,
 				};
-				oneOrder.cars.push(oneMenu);
+				oneOrder.cars.push(onecar);
 			}
 
 			order_collection.insert(oneOrder, function (err, records) {
@@ -674,7 +676,7 @@ router.post("/:id/success", function (req, res) {
  ******************************************************************************************************/
 
 /******************************************************************************************************
- * Profile page: Yinglue's part
+ * Profile page
  * ":id" is the user's id
  */
 // Get order history.
