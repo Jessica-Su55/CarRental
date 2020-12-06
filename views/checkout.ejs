@@ -11,21 +11,21 @@
     <div class="card mb-3" style="width: 70%;">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <a href="/menus/<%= item.menuObject._id %>">
-                    <img class="card-img" src="/images/<%= item.menuObject.image %>"
+                <a href="/cars/<%= item.carObject._id %>">
+                    <img class="card-img" src="/images/<%= item.carObject.image %>"
                         style="width:180px; height:180px;" />
                 </a>
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <div id="menuinfo" class="row align-items-center" style="font-size: 0.9rem">
+                    <div id="carinfo" class="row align-items-center" style="font-size: 0.9rem">
                         <div class="col-md-6">
-                            <p><strong>Name: </strong><%= item.menuObject.name %></p>
-                            <p><strong>Type: </strong><%= item.menuObject.type %></p>
+                            <p><strong>Name: </strong><%= item.carObject.name %></p>
+                            <p><strong>Type: </strong><%= item.carObject.type %></p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>Price: </strong>$<%= item.menuObject.price %></p>
-                            <p><strong>Order Quantity: </strong><%= item.menucount %></p>
+                            <p><strong>Price: </strong>$<%= item.carObject.price %></p>
+                            <p><strong>Order Quantity: </strong><%= item.carcount %></p>
                         </div>
                         <% if(!item.isEnough) { %>
                         <div class="alert alert-danger" role="alert">
