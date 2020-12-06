@@ -7,10 +7,10 @@ var Account = new Schema({
     password: String,
     isAdmin: {type: Boolean, default: false},
 
-    Menus:{
+    cars:{
         id:{
             type: mongoose.Schema.Types.ObjectId,
-            ref:'Menus'
+            ref:'cars'
         }
     }
 });

@@ -18,7 +18,7 @@ router.get("/", function (req, res, next) {
 	res.render("landing");
 });
 
-// "Add New Dish" form
+// "Add New Car" form
 router.get("/cars/new", function (req, res) {
 	res.render("new", { user: req.user });
 });
