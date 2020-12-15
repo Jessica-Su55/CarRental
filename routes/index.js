@@ -28,11 +28,11 @@ router.post("/cars", function (req, res) {
 	var collection = db.get("cars");
 	var form = new formidable.IncomingForm();
 	form.parse(req, function (err, fields, files) {
-		var oldpath = files.file.path;
-		var newpath = 'public/images/' + files.file.name;
-		fs.rename(oldpath, newpath, function (err) {
-			if (err) throw err;
-		});
+		// var oldpath = files.file.path;
+		// var newpath = 'public/images/' + files.file.name;
+		// fs.rename(oldpath, newpath, function (err) {
+		// 	if (err) throw err;
+		// });
 		collection.insert(
 			{
 				name: fields.name,
@@ -95,7 +95,7 @@ router.post("/register", function (req, res) {
 		}
 
 		passport.authenticate("local")(req, res, function () {
-			
+
 			res.redirect("/cars");
 		});
 	});
@@ -199,7 +199,7 @@ router.get("/cars", async (req, res, next) => {
 					if (err) {
 						console.log(err);
 					} else {
-						
+
 						   result = []
 						   length = cars.length;
 					        for (var i = 8 * (page - 1); i < 8 * page; i++) {
@@ -554,7 +554,7 @@ router.get("/:id/cart", function (req, res) {
 			if (err) {
 				res.redirect("/cars");
 			}
-			
+
 			res.render("cart", { user: foundUser, items: items });
 		});
 	});
